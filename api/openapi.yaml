@@ -1,0 +1,76 @@
+openapi: 3.0.0
+info:
+  description: "A service for searching books by title, author, or ISBN."
+  title: Book Search Service
+  version: 1.0.1
+servers:
+- url: /
+paths:
+  /search:
+    get:
+      description: |
+        This endpoint allows users to search for books by title, author, or ISBN.
+      parameters:
+      - description: "The search query (title, author, or ISBN)."
+        explode: true
+        in: query
+        name: query
+        required: true
+        schema:
+          type: string
+        style: form
+      - description: "The search criteria (title, author, or isbn)."
+        explode: true
+        in: query
+        name: search_by
+        required: true
+        schema:
+          enum:
+          - title
+          - author
+          - isbn
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                results:
+                - title: Example Book
+                  author: John Doe
+                  isbn: "1234567890"
+                  cover_image: https://example.com/cover-images/example.jpg
+                - title: Another Book
+                  author: Jane Smith
+                  isbn: "0987654321"
+                  cover_image: https://example.com/cover-images/another.jpg
+          description: Successful response
+        "400":
+          content:
+            application/json:
+              example:
+                error: "Invalid search criteria. Supported values: title, author,\
+                  \ isbn"
+          description: Bad Request
+        "404":
+          content:
+            application/json:
+              example:
+                error: No books found matching the provided query
+          description: Not Found
+      summary: Search for books
+components:
+  schemas:
+    Book:
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        isbn:
+          type: string
+        cover_image:
+          format: uri
+          type: string
+      type: object
